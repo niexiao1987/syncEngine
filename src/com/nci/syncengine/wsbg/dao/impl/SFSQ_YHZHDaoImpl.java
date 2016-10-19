@@ -1,0 +1,57 @@
+package com.nci.syncengine.wsbg.dao.impl;
+
+import java.util.List;
+
+import org.springframework.stereotype.Repository;
+
+import com.nci.syncengine.base.dao.impl.BaseDaoImpl;
+import com.nci.syncengine.wsbg.dao.SFSQ_YHZHDao;
+import com.nci.syncengine.wsbg.entity.SFSQ_YHZH;
+
+@Repository
+public class SFSQ_YHZHDaoImpl extends BaseDaoImpl<SFSQ_YHZH, String> implements
+		SFSQ_YHZHDao {
+
+	@Override
+	protected Class<SFSQ_YHZH> getEntityClass() {
+		// TODO Auto-generated method stub
+		return SFSQ_YHZH.class;
+	}
+
+	@Override
+	public List<SFSQ_YHZH> findAll() {
+		// TODO Auto-generated method stub
+		String hql = "from SFSQ_YHZH";
+		List<SFSQ_YHZH> items = this.queryByHql(hql, null);
+		return items;
+	}
+
+	@Override
+	public SFSQ_YHZH addSFSQ_YHZH(SFSQ_YHZH entity) {
+		return super.save(entity);
+	}
+
+	@Override
+	public String newYHBH() {
+		String sql = "select top 1 YHBH from SFSQ_YHZH  order by YHBH desc";
+		// String sql = "select count(*) from SFSQ_YHZH ";
+		List list = this.queryBySql(sql);
+		if (list != null && list.size() == 1) {
+			return list.get(0).toString();
+		}
+
+		// String hql = "from SFSQ_YHZH as e worder by YHBH desc";
+		// List<SFSQ_YHZH> items = this.queryByHql(hql, null);
+		// if(items.size()==1){
+		// return items.get(0).toString();
+		// }
+		return null;
+	}
+
+	@Override
+	public void batchMarkDelete(String[] items) {
+		// TODO Auto-generated method stub
+
+	}
+
+}
