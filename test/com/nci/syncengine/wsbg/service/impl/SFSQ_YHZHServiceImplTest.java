@@ -1,7 +1,6 @@
 package com.nci.syncengine.wsbg.service.impl;
 
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -92,7 +91,7 @@ public class SFSQ_YHZHServiceImplTest {
 		List<WebServiceUser> userList = getUserList(client,currPage);
 		for(WebServiceUser user : userList){
 			SFSQ_YHZH entity = new SFSQ_YHZH();
-			String id = UUID.randomUUID().toString().replace("-", "");
+			String id = UUID.randomUUID().toString().replace("-", "").toUpperCase();
 			String yhbh = SFSQ_YHZHService.newYHBH();
 			String userPwd = "123";
 			entity.init();
