@@ -1,6 +1,5 @@
 package com.nci.syncengine.wsbg.dao.impl;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Repository;
