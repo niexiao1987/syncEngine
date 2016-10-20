@@ -198,7 +198,7 @@ public class SFSQ_YHZH {
 	public String getGWQY() {
 		return GWQY;
 	}
-	public void setGWQY(String gWQY) {
+	public void setGWQX(String gWQY) {
 		GWQY = gWQY;
 	}
 	public String getSFZT() {
@@ -372,7 +372,73 @@ public class SFSQ_YHZH {
 	
 	
 	
+	@Override
+	public String toString() {
+		return "SFSQ_YHZH [ID=" + ID + ", YHBH=" + YHBH + ", XM=" + XM
+				+ ", MM=" + MM + ", YHZH=" + YHZH + ", BGXTZH=" + BGXTZH
+				+ ", RYXH=" + RYXH + ", YHLB=" + YHLB + ", YHJBID=" + YHJBID
+				+ ", ZZMM=" + ZZMM + ", MZ=" + MZ + ", CSRQ=" + CSRQ + ", XB="
+				+ XB + ", JZID=" + JZID + ", JXID=" + JXID + ", ZWID=" + ZWID
+				+ ", GWID=" + GWID + ", SSDW=" + SSDW + ", SSJG=" + SSJG
+				+ ", ZGDW=" + ZGDW + ", BMBM=" + BMBM + ", YHZT=" + YHZT
+				+ ", GWQY=" + GWQY + ", SFZT=" + SFZT + ", ZZDH=" + ZZDH
+				+ ", JTDH=" + JTDH + ", SJHM=" + SJHM + ", YXZH=" + YXZH
+				+ ", XNH=" + XNH + ", YJFJDX=" + YJFJDX + ", AddAcc=" + AddAcc
+				+ ", AddAccName=" + AddAccName + ", AddTime=" + AddTime
+				+ ", AddIP=" + AddIP + ", ChgAcc=" + ChgAcc + ", ChgAccName="
+				+ ChgAccName + ", ChgTime=" + ChgTime + ", ChgIP=" + ChgIP
+				+ ", Deleted=" + Deleted + ", FLAG0=" + FLAG0 + ", FLAG1="
+				+ FLAG1 + ", YJXSBJ=" + YJXSBJ + ", TXLXSBJ=" + TXLXSBJ
+				+ ", DXFSBJ=" + DXFSBJ + ", SFZW=" + SFZW + ", WJDX=" + WJDX
+				+ ", RYZT=" + RYZT + ", QSL=" + QSL + ", CYQSL=" + CYQSL
+				+ ", QCYS=" + QCYS + ", TXWJDX=" + TXWJDX + "]";
+	}
+	public void init(){
+		//人员序号
+		this.setRYXH("0199990000000000000099");
+		//用户类别
+		this.setYHLB("0");
+		//用户级别ID
+		this.setYHJBID(0);
+		//所属单位
+		this.setSSDW("01000000");
+		//所属机构
+		this.setSSJG("01000000");
+		//用户状态
+		this.setYHZT("1");
+		//公文权限
+		this.setGWQX("A");
+		//是否暂停
+		this.setSFZT("0");
+		//邮件附件大小
+		this.setYJFJDX(0);
+		//删除标记
+		this.setDeleted(false);
+		//是否公文成员
+		this.setFLAG0(false);
+		//是否驾驶员
+		this.setFLAG1(false);
+		//邮件显示标记
+		this.setYJXSBJ(false);
+		//通讯录显示标记
+		this.setTXLXSBJ(false);
+		//短信发送标记
+		this.setDXFSBJ(false);
+		//是否在位
+		this.setSFZW(false);
+		//文件大小
+		this.setWJDX(0);;
+		//人员状态
+		this.setRYZT("0");
+		//即使通讯录创建数
+		this.setQSL(0);
+		//群参与数
+		this.setCYQSL(0);
+		//群人员数
+		this.setQCYS(0);
+		//及时通讯文件大小
+		this.setTXWJDX(102400);
+	}
 	
 	
-
 }

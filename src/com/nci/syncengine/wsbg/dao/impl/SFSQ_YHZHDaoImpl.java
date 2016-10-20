@@ -1,5 +1,6 @@
 package com.nci.syncengine.wsbg.dao.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Repository;
@@ -33,9 +34,9 @@ public class SFSQ_YHZHDaoImpl extends BaseDaoImpl<SFSQ_YHZH, String> implements
 
 	@Override
 	public String newYHBH() {
-		String sql = "select top 1 YHBH from SFSQ_YHZH  order by YHBH desc";
+		String hql = "select  YHBH from SFSQ_YHZH  order by YHBH desc";
 		// String sql = "select count(*) from SFSQ_YHZH ";
-		List list = this.queryBySql(sql);
+		List list = this.queryByHql(hql, null, 0, 1);
 		if (list != null && list.size() == 1) {
 			return list.get(0).toString();
 		}
@@ -52,6 +53,17 @@ public class SFSQ_YHZHDaoImpl extends BaseDaoImpl<SFSQ_YHZH, String> implements
 	public void batchMarkDelete(String[] items) {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public boolean findByYHZH(String yHZH) {
+		String hql = "select count(*) from SFSQ_YHZH where YHZH = '"+yHZH+"'";
+	
+		List list = this.queryByHql(hql,null);
+		if(list.size()>0&&(long)list.get(0)>0){
+			return true;
+		}
+		return false;
 	}
 
 }
