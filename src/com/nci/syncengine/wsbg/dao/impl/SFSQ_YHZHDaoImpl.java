@@ -65,4 +65,10 @@ public class SFSQ_YHZHDaoImpl extends BaseDaoImpl<SFSQ_YHZH, String> implements
 		return false;
 	}
 
+	@Override
+	public void deleteByYHZH(String yHZH) {
+		String hql = "delete SFSQ_YHZH where YHZH = '"+yHZH+"'";
+		this.executeHql(hql, null);
+	}
+
 }

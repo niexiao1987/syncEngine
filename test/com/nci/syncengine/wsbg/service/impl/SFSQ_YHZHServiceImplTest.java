@@ -20,6 +20,12 @@ import java.util.UUID;
 
 
 
+
+
+
+
+
+
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
@@ -32,10 +38,13 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import com.jeaw.webservice.client.ParamsMap;
 import com.jeaw.webservice.client.WebServiceClientException;
 import com.jeaw.webservice.http.client.CommonHttpWebServiceClient;
+import com.jeaw.webservice.http.client.SyncAppUserMapHttpWebServiceClient;
 import com.nci.syncengine.util.EncryptHelper;
 import com.nci.syncengine.util.PropUtil;
+import com.nci.syncengine.wsbg.entity.DateVersion;
 import com.nci.syncengine.wsbg.entity.SFSQ_YHZH;
 import com.nci.syncengine.wsbg.entity.WebServiceUser;
+import com.nci.syncengine.wsbg.service.DateVersionService;
 import com.nci.syncengine.wsbg.service.SFSQ_YHZHService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -43,9 +52,12 @@ import com.nci.syncengine.wsbg.service.SFSQ_YHZHService;
 @ContextConfiguration(locations = { "classpath:config/application-context.xml" })
 // 用于指定配置文件所在的位置
 public class SFSQ_YHZHServiceImplTest {
-
+	List<WebServiceUser> userList = new ArrayList<WebServiceUser>();
 	@Autowired
 	private SFSQ_YHZHService SFSQ_YHZHService;
+	
+	@Autowired
+	private DateVersionService dateVersionService;
 
 	@Test
 	public void testFindAll() {
@@ -88,8 +100,22 @@ public class SFSQ_YHZHServiceImplTest {
 		CommonHttpWebServiceClient client = new CommonHttpWebServiceClient(wsdl, username, password);
 		
 		int currPage = 1;
-		List<WebServiceUser> userList = getUserList(client,currPage);
+		//获取版本号
+		DateVersion dateVersion = dateVersionService.findById("com.nci.syncengine.wsbg.entity.SFSQ_YHZH");
+		if(dateVersion==null){
+			DateVersion entity = new DateVersion();
+			entity.setYwCode(SFSQ_YHZH.class.getName());
+			dateVersion = dateVersionService.save(entity);
+		}
+		Long dv = dateVersion.getDataversion()==null?0:dateVersion.getDataversion();
+		Long version = dv;
+		//获取需要同步的user
+		List<WebServiceUser> userList = getUserList(client,currPage,dv);
+		List<WebServiceUser> syncSucessUser = new ArrayList<WebServiceUser>();
 		for(WebServiceUser user : userList){
+			if(user.getDATAVERSION()>version){
+				version = user.getDATAVERSION();
+			}
 			SFSQ_YHZH entity = new SFSQ_YHZH();
 			String id = UUID.randomUUID().toString().replace("-", "").toUpperCase();
 			String yhbh = SFSQ_YHZHService.newYHBH();
@@ -101,7 +127,20 @@ public class SFSQ_YHZHServiceImplTest {
 			entity.setMM(EncryptHelper.encryptPwd(userPwd));
 			entity.setYHZH(user.getLOGINID());
 			boolean flag = SFSQ_YHZHService.addSFSQ_YHZH(entity);
+			//SFSQ_YHZHService.delByYHZH(entity.getYHZH());
+			if(flag){
+				syncSucessUser.add(user);
+			}
+			
 			System.out.println(flag);
+		}
+		
+		if(syncSucessUser.size()>0){
+			addUserMap(syncSucessUser);
+		}
+		if(dv<version){
+			dateVersion.setDataversion(version);
+			dateVersionService.update(dateVersion);
 		}
 		
 		
@@ -117,14 +156,13 @@ public class SFSQ_YHZHServiceImplTest {
 	}
 	
 	
-	public static List<WebServiceUser> getUserList(CommonHttpWebServiceClient client ,int currPage) throws Exception{
-		List<WebServiceUser> userList = new ArrayList<WebServiceUser>();
-		
-		
+	public  List<WebServiceUser> getUserList(CommonHttpWebServiceClient client ,int currPage,Long dataVersion) throws Exception{
+
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("PAGE",currPage);
 		map.put("PAGESIZE", 20);
 		map.put("USERTYPE", "00");
+		map.put("DATAVERSION", dataVersion);
 		
 		ParamsMap params = new ParamsMap();
 		params.addParam(map);
@@ -140,10 +178,13 @@ public class SFSQ_YHZHServiceImplTest {
 				WebServiceUser user = new WebServiceUser();
 				user.setLOGINID((String) jsonMap.get("LOGINID"));
 				user.setXM((String)jsonMap.get("XM"));
+				user.setDATAVERSION((Long)jsonMap.get("DATAVERSION"));
+				user.setRYBH((String)jsonMap.get("RYBH"));
 				userList.add(user);
+				System.out.println(user);
 			}
 			if(currPage<totalPageCount){
-				getUserList(client,++currPage);
+				getUserList(client,++currPage,dataVersion);
 			}
 		}else{
 			throw new Exception("获取数据失败");
@@ -152,5 +193,24 @@ public class SFSQ_YHZHServiceImplTest {
 		return userList;
 	}
 
-	
+	public void addUserMap(List<WebServiceUser> userList) throws WebServiceClientException{
+		String wsdl = PropUtil.getProperty("service_app_userMap");
+		String username = PropUtil.getProperty("service_app_username");
+		String password = PropUtil.getProperty("service_app_password");
+		SyncAppUserMapHttpWebServiceClient client = new SyncAppUserMapHttpWebServiceClient(wsdl, username, password);
+		StringBuffer rybhXml = new StringBuffer();
+		for(WebServiceUser user : userList){
+			rybhXml.append("<RYBH>"+user.getRYBH()+"</RYBH>");
+		}
+		String mapDataAddXml = "<DATAS><APPSYSCODE>WSBG</APPSYSCODE>"       //
+				+ "<MODE>INCREMENT</MODE><DATA><ADD>"+rybhXml.toString()    //
+				+ "</ADD><DEL>"                                             //
+				+ "</DEL></DATA></DATAS>";
+		String mapDataDelXml = "<DATAS><APPSYSCODE>WSBG</APPSYSCODE>"  //
+				+ "<MODE>INCREMENT</MODE><DATA><ADD>"                  //
+				+ "</ADD><DEL>"+rybhXml.toString()                     // 
+				+ "</DEL></DATA></DATAS>";
+		String result =client.synchroniseMapData(mapDataAddXml);
+		System.out.println(result);
+	}
 }

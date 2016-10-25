@@ -1,15 +1,22 @@
 package com.nci.syncengine.wsbg.entity;
 
 public class WebServiceUser {
-	private String DATAVERSION;//版本号
+	private Long DATAVERSION;//版本号
 	private String LOGINID;//登录账号
 	private String JGMC;//部门
 	private String STATUS;//状态
 	private String XM;//姓名
-	public String getDATAVERSION() {
+	private String RYBH;//人员编号
+	public String getRYBH() {
+		return RYBH;
+	}
+	public void setRYBH(String rYBH) {
+		RYBH = rYBH;
+	}
+	public Long getDATAVERSION() {
 		return DATAVERSION;
 	}
-	public void setDATAVERSION(String dATAVERSION) {
+	public void setDATAVERSION(Long dATAVERSION) {
 		DATAVERSION = dATAVERSION;
 	}
 	public String getLOGINID() {
@@ -40,8 +47,9 @@ public class WebServiceUser {
 	public String toString() {
 		return "WebServiceUser [DATAVERSION=" + DATAVERSION + ", LOGINID="
 				+ LOGINID + ", JGMC=" + JGMC + ", STATUS=" + STATUS + ", XM="
-				+ XM + "]";
+				+ XM + ", RYBH=" + RYBH + "]";
 	}
+
 	
 	
 	

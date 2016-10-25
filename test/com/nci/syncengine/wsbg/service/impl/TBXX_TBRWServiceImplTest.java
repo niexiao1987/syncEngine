@@ -1,26 +1,44 @@
 package com.nci.syncengine.wsbg.service.impl;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.nci.syncengine.wsbg.dao.DBZHJC_DBSXDao;
-import com.nci.syncengine.wsbg.entity.DBZHJC_DBSX;
-
 @RunWith(SpringJUnit4ClassRunner.class)
 //用于配置spring中测试的环境
 @ContextConfiguration(locations = { "classpath:config/application-context.xml" })
 //用于指定配置文件所在的位置
-public class DBZHJC_DBSXServiceImplTest {
+public class TBXX_TBRWServiceImplTest {
 	@Autowired
-	private DBZHJC_DBSXDao DBDBZHJC_DBSXDao;
-	
+	private  com.nci.syncengine.wsbg.service.TBXX_TBRWService TBXX_TBRWService;
 	@Test
 	public void getById(){
-		DBZHJC_DBSX a = DBDBZHJC_DBSXDao.findById("FA80247541074A4BA3ED0EC786BA09F6");
-		System.out.println(a);
+		System.out.println(TBXX_TBRWService.findById(1));
 	}
+	
+	
+	@Test
+	public void task(){
+		TimerTask timerTask = new TimerTask() {
+			
+			@Override
+			public void run() {
+				System.out.println("---22---");
+				
+			}
+		};
+		
+		Timer timer = new Timer();
+		long delay = 0;
+		long intevalPeriod = 1*1000;
+		timer.scheduleAtFixedRate(timerTask, delay, intevalPeriod);
+		
+	}
+	
 
 }

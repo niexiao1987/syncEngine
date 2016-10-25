@@ -14,4 +14,6 @@ public interface SFSQ_YHZHService extends BaseService<SFSQ_YHZH, String> {
 	public String newYHBH();
 	
 	public boolean isExitByYHZH(String YHZH);
+	
+	public void delByYHZH(String YHZH);
 }
