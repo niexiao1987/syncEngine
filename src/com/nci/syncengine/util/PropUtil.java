@@ -10,7 +10,7 @@ public class PropUtil {
 	static {
 		prop = new Properties();
 		InputStream in = new PropUtil().getClass().getResourceAsStream(
-				"/webservice.properties");
+				"/config/webservice.properties");
 		try {
 			prop.load(in);
 		} catch (IOException e) {
