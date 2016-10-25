@@ -17,13 +17,12 @@ import com.nci.wjxy.notification.service.http.Plugin_wjxy_N_NotificationServiceS
  */
 public class NotificationService {
 
-	private static String WS_WSDL_ADDRESS = "http://@/notification-portlet/api/axis/Plugin_wjxy_N_NotificationService?wsdl";
-	private String wsdlAddress;
 	private Plugin_wjxy_N_NotificationServiceSoapBindingStub stub = null;
 
-	public NotificationService(String webServiceIP, String userName,
+	public NotificationService(String wsdlAddress, String userName,
 			String password) throws AxisFault {
-		this.wsdlAddress = WS_WSDL_ADDRESS.replace("@", webServiceIP);
+		getStub()._setProperty("javax.xml.rpc.service.endpoint.address",
+				wsdlAddress.trim());
 		getStub().setUsername(userName.trim());
 		getStub().setPassword(password.trim());
 	}
@@ -173,8 +172,6 @@ public class NotificationService {
 			throws AxisFault {
 		if (this.stub == null) {
 			this.stub = new Plugin_wjxy_N_NotificationServiceSoapBindingStub();
-			this.stub._setProperty("javax.xml.rpc.service.endpoint.address",
-					this.wsdlAddress.trim());
 		}
 		return this.stub;
 	}

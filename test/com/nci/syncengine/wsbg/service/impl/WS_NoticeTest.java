@@ -11,6 +11,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.nci.syncengine.api.service.NoticeService;
 import com.nci.syncengine.api.service.NotificationService;
+import com.nci.syncengine.util.PropUtil;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 // 用于配置spring中测试的环境
@@ -18,19 +19,21 @@ import com.nci.syncengine.api.service.NotificationService;
 // 用于指定配置文件所在的位置
 public class WS_NoticeTest {
 
-	private static String IP = "10.10.9.9:6060";
-	private static String SYSTEM = "wsbg";
+	private static String WSDL_ADDRESS = PropUtil.getProperty("service_dbsx_wsdlAddress");
+	private static String SYSTEM = PropUtil.getProperty("service_dbsx_system");
 	private static String USER_ID = "";
 	private static String ORGANIZATION_ID = "";
 
-	private static String WS_USERNAME = "bzjl";
-	private static String WS_PASSWORD = "123";
+	private static String WS_USERNAME = PropUtil
+			.getProperty("service_dbsx_username");
+	private static String WS_PASSWORD = PropUtil
+			.getProperty("service_dbsx_password");
 
 	private static NoticeService noticeService = null;
 
 	private NoticeService getNoticeService() throws AxisFault {
 		if (noticeService == null) {
-			noticeService = new NoticeService(IP, WS_USERNAME, WS_PASSWORD);
+			noticeService = new NoticeService(WSDL_ADDRESS, WS_USERNAME, WS_PASSWORD);
 		}
 		return noticeService;
 	}

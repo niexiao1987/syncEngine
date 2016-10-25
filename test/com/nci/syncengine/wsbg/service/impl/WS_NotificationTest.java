@@ -21,7 +21,7 @@ import com.nci.syncengine.util.PropUtil;
 // 用于指定配置文件所在的位置
 public class WS_NotificationTest {
 
-	private static String IP = PropUtil.getProperty("service_tzgg_IP");
+	private static String WSDL_ADDRESS = PropUtil.getProperty("service_tzgg_wsdlAddress");
 	private static String SYSTEM = PropUtil.getProperty("service_tzgg_system");
 	private static String USER_ID = "";
 	private static String ORGANIZATION_ID = "";
@@ -35,7 +35,7 @@ public class WS_NotificationTest {
 
 	private NotificationService getNotificationService() throws AxisFault {
 		if (notificationService == null) {
-			notificationService = new NotificationService(IP, WS_USERNAME,
+			notificationService = new NotificationService(WSDL_ADDRESS, WS_USERNAME,
 					WS_PASSWORD);
 		}
 		return notificationService;
