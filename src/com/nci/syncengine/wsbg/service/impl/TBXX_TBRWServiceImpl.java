@@ -1,5 +1,7 @@
 package com.nci.syncengine.wsbg.service.impl;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,4 +21,14 @@ public class TBXX_TBRWServiceImpl extends BaseServiceImpl<TBXX_TBRW, Integer> im
 	protected TBXX_TBRWDao getTBXX_TBRWDao() {
 		return (TBXX_TBRWDao) this.baseDao;
 	}
+
+	@Override
+	public List<TBXX_TBRW> getByDataVersion(Long dataVersion) {
+		if(dataVersion==null){
+			dataVersion = 0L;
+		}
+		return getTBXX_TBRWDao().findByDataVersion(dataVersion);
+	}
+
+	
 }
