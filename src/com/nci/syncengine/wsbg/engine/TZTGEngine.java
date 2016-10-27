@@ -18,6 +18,48 @@ import com.nci.syncengine.wsbg.entity.SWGL_TZTG;
  */
 public class TZTGEngine {
 
+	/**
+	 * 保存或更新通知通告
+	 * 
+	 * @param tztg
+	 *            通知通告实体
+	 */
+	public static void saveOrUpdate(SWGL_TZTG tztg) throws AxisFault,
+			RemoteException {
+		String url = tztg.getNRLB() == "0" ? null : null;// 根据内容类别决定是否有url，有的话为附件下载地址？
+		boolean stick = tztg.getJJCD() != "0";// 根据紧急程度决定是否置顶
+		getNotificationService().saveOrUpdate(tztg.getID(), SYSTEM,
+				tztg.getBT(), tztg.getNR(), url, USER_ID, ORGANIZATION_ID,
+				stick, tztg.getFBRQ(), tztg.getYXRQ());
+	}
+
+	/**
+	 * 保存并发布通知公告
+	 * 
+	 * @param tztg
+	 *            通知通告实体
+	 */
+	public static void saveAndPublish(SWGL_TZTG tztg) throws AxisFault,
+			RemoteException {
+
+		String url = tztg.getNRLB() == "0" ? null : null;// 根据内容类别决定是否有url，有的话为附件下载地址？
+		boolean stick = tztg.getJJCD() != "0";// 根据紧急程度决定是否置顶
+		// 网上办公的通知公告都是针对所有人的 所以isAllUser = true permCode=null
+		getNotificationService().saveAndPublish(tztg.getID(), SYSTEM,
+				tztg.getBT(), tztg.getNR(), url, USER_ID, ORGANIZATION_ID,
+				stick, true, null, tztg.getFBRQ(), tztg.getYXRQ());
+	}
+
+	/**
+	 * 删除通知公告
+	 * 
+	 * @param tztg
+	 *            通知通告实体
+	 */
+	public static void delete(SWGL_TZTG tztg) throws RemoteException {
+		getNotificationService().delete(tztg.getID(), SYSTEM);
+	}
+
 	private static String WSDL_ADDRESS = PropUtil
 			.getProperty("service_tzgg_wsdlAddress");
 	private static String SYSTEM = PropUtil.getProperty("service_tzgg_system");
@@ -40,78 +82,36 @@ public class TZTGEngine {
 		return notificationService;
 	}
 
-	/**
-	 * 保存或更新通知通告
-	 * 
-	 * @param tztg
-	 *            通知通告实体
-	 */
-	public static void saveOrUpdate(SWGL_TZTG tztg) throws AxisFault,
-			RemoteException {
+	/*************************************************/
+	// /**
+	// * 置顶通知公告
+	// *
+	// * @param tztg
+	// * 通知通告实体
+	// */
+	// public static void stick(SWGL_TZTG tztg) throws AxisFault,
+	// RemoteException {
+	// getNotificationService().stick(tztg.getID(), SYSTEM);
+	// }
+	//
+	// /**
+	// * 取消置顶通知公告
+	// *
+	// * @param tztg
+	// * 通知通告实体
+	// */
+	// public static void cancelStick(SWGL_TZTG tztg) throws RemoteException {
+	// getNotificationService().cancelStick(tztg.getID(), SYSTEM);
+	// }
 
-		String url = null;// 根据内容类别决定是否有url，有的话为附件下载地址？
-		boolean stick = false;// 根据紧急程度决定是否置顶
-		getNotificationService().saveOrUpdate(tztg.getID(), SYSTEM,
-				tztg.getBT(), tztg.getNR(), url, USER_ID, ORGANIZATION_ID,
-				stick, tztg.getFBRQ(), tztg.getYXRQ());
-	}
-
-	/**
-	 * 保存并发布通知公告
-	 * 
-	 * @param tztg
-	 *            通知通告实体
-	 */
-	public static void saveAndPublish(SWGL_TZTG tztg) throws AxisFault,
-			RemoteException {
-
-		String url = null;// 根据内容类别决定是否有url，有的话为附件下载地址？
-		boolean stick = false;// 根据紧急程度决定是否置顶
-		boolean isAllUser = true;// 网上办公的通知公告都是针对所有人的
-		String permCode = null;
-		getNotificationService().saveAndPublish(tztg.getID(), SYSTEM,
-				tztg.getBT(), tztg.getNR(), url, USER_ID, ORGANIZATION_ID,
-				stick, isAllUser, permCode, tztg.getFBRQ(), tztg.getYXRQ());
-	}
-
-	public static void publish(SWGL_TZTG tztg) throws AxisFault,
-			RemoteException {
-		getNotificationService().publish(tztg.getID(), SYSTEM, true, null);
-	}
-
-	public static void revocation(SWGL_TZTG tztg) throws AxisFault,
-			RemoteException {
-		getNotificationService().revocation(tztg.getID(), SYSTEM);
-	}
-
-	/**
-	 * 置顶通知公告
-	 * 
-	 * @param tztg
-	 *            通知通告实体
-	 */
-	public static void stick(SWGL_TZTG tztg) throws AxisFault, RemoteException {
-		getNotificationService().stick(tztg.getID(), SYSTEM);
-	}
-
-	/**
-	 * 取消置顶通知公告
-	 * 
-	 * @param tztg
-	 *            通知通告实体
-	 */
-	public static void cancelStick(SWGL_TZTG tztg) throws RemoteException {
-		getNotificationService().cancelStick(tztg.getID(), SYSTEM);
-	}
-
-	/**
-	 * 删除通知公告
-	 * 
-	 * @param tztg
-	 *            通知通告实体
-	 */
-	public static void delete(SWGL_TZTG tztg) throws RemoteException {
-		getNotificationService().delete(tztg.getID(), SYSTEM);
-	}
+	// public static void publish(SWGL_TZTG tztg) throws AxisFault,
+	// RemoteException {
+	// getNotificationService().publish(tztg.getID(), SYSTEM, true, null);
+	// }
+	//
+	// public static void revocation(SWGL_TZTG tztg) throws AxisFault,
+	// RemoteException {
+	// getNotificationService().revocation(tztg.getID(), SYSTEM);
+	// }
 
 }
