@@ -75,10 +75,12 @@ public class TZTGEngine {
 		List<SWGL_TZFJ> listTZFJ = tzfjService.getBySWGL_TZTGId(tztg.getID());
 		if (listTZFJ != null) {
 			StringBuilder sbFJ = new StringBuilder();
+			sbFJ.append("</br>");
 			for (SWGL_TZFJ swgl_TZFJ : listTZFJ) {
-				// todo：修改链接格式
-				sbFJ.append(swgl_TZFJ.getFJBDMC() + " : ");
-				sbFJ.append(FJXZ_ADDRESS + "?ID=" + swgl_TZFJ.getID());
+				String href = FJXZ_ADDRESS + "?ID=" + swgl_TZFJ.getID();
+				sbFJ.append("<a href='" + href + "'>" + swgl_TZFJ.getFJBDMC()
+						+ "</a>");
+				sbFJ.append("</br>");
 			}
 			return tztg.getNR() + sbFJ.toString();
 		}
@@ -102,7 +104,7 @@ public class TZTGEngine {
 
 	@Autowired
 	private com.nci.syncengine.wsbg.service.SWGL_TZFJService tzfjService;
-
+	
 	private static String WSDL_ADDRESS = PropUtil
 			.getProperty("service_tzgg_wsdlAddress");
 	private static String SYSTEM = PropUtil.getProperty("service_tzgg_system");

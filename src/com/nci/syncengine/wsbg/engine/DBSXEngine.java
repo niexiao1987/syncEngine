@@ -10,6 +10,7 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import org.apache.axis.AxisFault;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.jeaw.webservice.client.ParamsMap;
@@ -18,7 +19,7 @@ import com.jeaw.webservice.http.client.CommonHttpWebServiceClient;
 import com.nci.syncengine.api.service.NoticeService;
 import com.nci.syncengine.util.PropUtil;
 import com.nci.syncengine.wsbg.entity.DBZHJC_DBSX;
-import com.nci.wjxy.portal.service.http.Plugin_wjxy_NoticeServiceSoapBindingStub;
+import com.nci.syncengine.wsbg.entity.SFSQ_YHZH;
 
 /**
  * 网上办公待办事项引擎
@@ -29,27 +30,12 @@ import com.nci.wjxy.portal.service.http.Plugin_wjxy_NoticeServiceSoapBindingStub
 @Component
 public class DBSXEngine {
 
-	private static String WSDL_ADDRESS = PropUtil
-			.getProperty("service_dbsx_wsdlAddress");
-	private static String SYSTEM = PropUtil.getProperty("service_dbsx_system");
-	private static String WS_USERNAME = PropUtil
-			.getProperty("service_dbsx_username");
-	private static String WS_PASSWORD = PropUtil
-			.getProperty("service_dbsx_password");
-
-	private static String USER_ID = "";
-	private static String ORGANIZATION_ID = "";
-
-	private static NoticeService noticeService = null;
-
-	private static NoticeService getNoticeService() throws AxisFault {
-		if (noticeService == null) {
-			noticeService = new NoticeService(WSDL_ADDRESS, WS_USERNAME,
-					WS_PASSWORD);
-		}
-		return noticeService;
-	}
-
+	/**
+	 * 添加待办事项
+	 * 
+	 * @param dbsx
+	 *            待办事项实体
+	 */
 	public void addNotice(DBZHJC_DBSX dbsx) throws AxisFault, RemoteException,
 			WebServiceClientException {
 		// 根据待办事项类型决定发送受众,待办显示类型(0：按人员编号显示 1：按权限显示) null视为0
@@ -60,10 +46,13 @@ public class DBSXEngine {
 		appsysLoginIds.clear();
 
 		if (dbsx.getSFCL() == "1") {
-			// todo:根据权限获取拥有值定权限的用户，并将用户ID
+			// todo:根据权限获取拥有值定权限的用户，然后根据用户Id获得LoginId，最后加到appsysLoginIds中
 		} else {
-			String appsysLoginId = dbsx.getSJRID();// todo：根据用户Id获得LoginId
-			appsysLoginIds.add(appsysLoginId);
+			SFSQ_YHZH yhzh = yhzhService.getByYHBH(dbsx.getSJRID());
+			if (yhzh != null) {
+				String appsysLoginId = yhzh.getYHZH();// 根据用户Id获得LoginId
+				appsysLoginIds.add(appsysLoginId);
+			}
 		}
 		for (String appsysLoginId : appsysLoginIds) {
 			String classId = getUUMSLoginID(appsysLoginId);// 调用公共数据平台接口，获得对应的UUMSLoginID
@@ -77,13 +66,20 @@ public class DBSXEngine {
 		}
 	}
 
+	/**
+	 * 完成待办事项
+	 * 
+	 * @param dbsx
+	 *            待办事项实体
+	 */
 	public void completedNotice(DBZHJC_DBSX dbsx) throws AxisFault,
 			RemoteException {
 		getNoticeService().completedNotice(SYSTEM, dbsx.getID());
 	}
 
-	private static String getUrl(DBZHJC_DBSX dbsx) {
-		return dbsx.getBTLJ();
+	private String getUrl(DBZHJC_DBSX dbsx) {
+		// 根据待办事项类型获取跳转地址
+		return DBSX_ADDRESS + dbsx.getSPLXBH();
 	}
 
 	/**
@@ -122,4 +118,28 @@ public class DBSXEngine {
 		return null;
 	}
 
+	@Autowired
+	private com.nci.syncengine.wsbg.service.SFSQ_YHZHService yhzhService;
+
+	private static String WSDL_ADDRESS = PropUtil
+			.getProperty("service_dbsx_wsdlAddress");
+	private static String SYSTEM = PropUtil.getProperty("service_dbsx_system");
+	private static String WS_USERNAME = PropUtil
+			.getProperty("service_dbsx_username");
+	private static String WS_PASSWORD = PropUtil
+			.getProperty("service_dbsx_password");
+
+	// 跳转地址
+	private static String DBSX_ADDRESS = PropUtil
+			.getProperty("service_dbsx_address");
+
+	private static NoticeService noticeService = null;
+
+	private static NoticeService getNoticeService() throws AxisFault {
+		if (noticeService == null) {
+			noticeService = new NoticeService(WSDL_ADDRESS, WS_USERNAME,
+					WS_PASSWORD);
+		}
+		return noticeService;
+	}
 }
