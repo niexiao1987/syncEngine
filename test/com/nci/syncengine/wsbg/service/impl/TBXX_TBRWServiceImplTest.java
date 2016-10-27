@@ -161,8 +161,12 @@ public class TBXX_TBRWServiceImplTest {
 		}
 		//更新
 		if("u".equals(lx)&&"0".equals(tztg.getDeleted())){
-			TZTGEngine.saveOrUpdate(tztg);
+			TZTGEngine.saveAndPublish(tztg);
 			System.out.println("update："+tztg);
 		}
+	}
+	//根据同步任务表和代办事项的状态判断是删除还是新增，更新
+	private void DBSXSaveOrUpdate(String lx,DBZHJC_DBSX  dbsx){
+		
 	}
 }
