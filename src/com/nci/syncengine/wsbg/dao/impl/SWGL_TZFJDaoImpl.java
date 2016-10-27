@@ -24,7 +24,7 @@ public class SWGL_TZFJDaoImpl extends BaseDaoImpl<SWGL_TZFJ, String> implements
 	}
 
 	@Override
-	public SWGL_TZFJ findBySWGL_TZTGId(String sWGL_TZTGId) {
+	public SWGL_TZFJ findBySWGL_TZFJId(String sWGL_TZTGId) {
 		String hql = " FROM SWGL_TZFJ where TZID = '"+sWGL_TZTGId+"'";
 		List list = this.queryByHql(hql, null);
 		if(list!=null&&list.size()>0){

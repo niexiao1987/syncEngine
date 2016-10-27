@@ -22,8 +22,8 @@ public class SWGL_TZFJServiceImpl extends BaseServiceImpl<SWGL_TZFJ, String> imp
 	}
 
 	@Override
-	public SWGL_TZFJ getBySWGL_TZTGId(String SWGL_TZTGId) {
-		return getSWGL_TZFJDao().findBySWGL_TZTGId(SWGL_TZTGId);
+	public SWGL_TZFJ getBySWGL_TZFJId(String SWGL_TZTGId) {
+		return getSWGL_TZFJDao().findBySWGL_TZFJId(SWGL_TZTGId);
 		
 	}
 
