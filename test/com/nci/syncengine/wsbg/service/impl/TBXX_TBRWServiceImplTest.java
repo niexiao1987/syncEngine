@@ -1,15 +1,18 @@
 package com.nci.syncengine.wsbg.service.impl;
 
+import java.rmi.RemoteException;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import org.apache.axis.AxisFault;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.nci.syncengine.wsbg.engine.TZTGEngine;
 import com.nci.syncengine.wsbg.entity.DBZHJC_DBSX;
 import com.nci.syncengine.wsbg.entity.DateVersion;
 import com.nci.syncengine.wsbg.entity.SFSQ_YHZH;
@@ -27,6 +30,8 @@ import com.nci.syncengine.wsbg.service.SWGL_TZTGService;
 public class TBXX_TBRWServiceImplTest {
 	private static final String BMTZTG = "SWGL_TZTG";
 	private static final String BMDBSX = "DBZHJC_DBSX";
+	private static final String ZT_YCK = "1"; //已经处理的状态标识符
+	private static final String ZT_WCK = "0"; //未处理的状态标识符
 	@Autowired
 	private  com.nci.syncengine.wsbg.service.TBXX_TBRWService TBXX_TBRWService;
 	@Autowired
@@ -62,6 +67,22 @@ public class TBXX_TBRWServiceImplTest {
 		dateVersionService.update(a);
 	}
 	
+	/**
+	 * 获取同步任务表list
+	 */
+	@Test
+	public void getTBRWList(){
+		List<TBXX_TBRW> tbrwList = TBXX_TBRWService.getByZT(ZT_WCK);
+		for(int i = 0;i<tbrwList.size();i++){
+			System.out.println(tbrwList.get(i));
+		}
+	}
+	@Test
+	public void changeZT(){
+		String zt = "0";
+		TBXX_TBRWService.changeZT(zt);
+	}
+	
 	
 	@Test
 	public void task(){
@@ -88,47 +109,60 @@ public class TBXX_TBRWServiceImplTest {
 	 * @return List<TBXX_TBRW>
 	 */
 	@Test
-	public void getByDataVersion(){
-		DateVersion a = dateVersionService.findById(TBXX_TBRW.class.getName());
-		if(a==null){
-			DateVersion version = new DateVersion();
-			version.setYwCode(TBXX_TBRW.class.getName());
-			version.setYwCode("0");
-			dateVersionService.save(version);
-		}
-		Long dataVersion = a.getDataversion()==null?0:a.getDataversion();
-		Long dv = dataVersion;
-		List<TBXX_TBRW> tbrwList = TBXX_TBRWService.getByDataVersion(dataVersion);
+	public void saveToMenhu(){
+		List<TBXX_TBRW> tbrwList = TBXX_TBRWService.getByZT(ZT_WCK);
 		if(tbrwList!=null){
 			for(TBXX_TBRW tbrw:tbrwList){
-				System.out.println(tbrw);
-				if(tbrw.getID()>dataVersion){
-					dataVersion = tbrw.getID().longValue();
-				}
-				//获取代办事项和通知公告
+				//获取通知公告
 				if(BMTZTG.endsWith(tbrw.getBM())){
 					String tztgId = tbrw.getBID();
 					SWGL_TZTG tztg = SWGL_TZTGService.findById(tztgId);
-					System.out.println(tztg);
+					try {
+						TZTGSaveOrUpdate(tbrw.getLX(),tztg);
+					} catch (RemoteException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+						return;
+					}
 					//通知公告附件
-					SWGL_TZFJ fj = SWGL_TZFJService.findById(tztgId);
-					System.out.println(fj);
+					SWGL_TZFJ fj = SWGL_TZFJService.getBySWGL_TZTGId(tztgId);
+					
+					//已经同步到门户，将状态置为1
+					tbrw.setZT(ZT_YCK);
+					TBXX_TBRWService.update(tbrw);
 				}
-				
+				//获取代办事项
 				if(BMDBSX.equals(tbrw.getBM())){
 					String dbsxId = tbrw.getBID();
 					DBZHJC_DBSX dbsx = DBZHJC_DBSXService.findById(dbsxId);
-					System.out.println(dbsx);
 				}
+				
+				
 				
 			}
 			
-			if(dataVersion>dv){
-				a.setDataversion(dataVersion);
-				dateVersionService.update(a);
-			}
 		}
 		
 		
+	}
+	
+	//根据同步任务表和通知公告的状态判断是删除还是新增，更新
+	private void TZTGSaveOrUpdate(String lx,SWGL_TZTG tztg) throws AxisFault, RemoteException{
+		System.out.println("状态:"+lx);
+		//新增
+		if("i".equals(lx)){		
+			TZTGEngine.saveAndPublish(tztg);
+			System.out.println("insert："+tztg);
+		}
+		//删除
+		if("u".equals(lx)&&"1".equals(tztg.getDeleted())){
+			TZTGEngine.delete(tztg);
+			System.out.println("del："+tztg);
+		}
+		//更新
+		if("u".equals(lx)&&"0".equals(tztg.getDeleted())){
+			TZTGEngine.saveOrUpdate(tztg);
+			System.out.println("update："+tztg);
+		}
 	}
 }

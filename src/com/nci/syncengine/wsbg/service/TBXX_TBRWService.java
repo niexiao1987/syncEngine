@@ -8,5 +8,10 @@ import com.nci.syncengine.wsbg.entity.TBXX_TBRW;
 public interface TBXX_TBRWService extends BaseService<TBXX_TBRW, Integer> {
 
 	List<TBXX_TBRW> getByDataVersion(Long dataVersion);
+	
+	List<TBXX_TBRW> getByZT(String zt);
+
+	void changeZT(String zt);
+	
 
 }

@@ -1,5 +1,7 @@
 package com.nci.syncengine.wsbg.service.impl;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +30,31 @@ public class TBXX_TBRWServiceImpl extends BaseServiceImpl<TBXX_TBRW, Integer> im
 			dataVersion = 0L;
 		}
 		return getTBXX_TBRWDao().findByDataVersion(dataVersion);
+	}
+
+	@Override
+	public List<TBXX_TBRW> getByZT(String zt) {
+		List<TBXX_TBRW> list = getTBXX_TBRWDao().findByZt(zt);
+		Collections.sort(list, new Comparator<TBXX_TBRW>() {
+
+			@Override
+			public int compare(TBXX_TBRW o1, TBXX_TBRW o2) {
+				if(o1.getSJ().before(o2.getSJ())){
+					return -1;
+				}else if(o1.getSJ().equals(o2.getSJ())){
+					return 0;
+				}else{
+					return 1;
+				}
+			}
+		});
+		return list;
+	}
+
+	@Override
+	public void changeZT(String zt) {
+		getTBXX_TBRWDao().changeZT(zt);
+		
 	}
 
 	

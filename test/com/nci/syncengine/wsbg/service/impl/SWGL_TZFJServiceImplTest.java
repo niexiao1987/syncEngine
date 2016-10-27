@@ -24,7 +24,7 @@ public class SWGL_TZFJServiceImplTest {
 	
 	@Test
 	public void getBySWGL_TZTGId(){
-		SWGL_TZFJ a =SWGL_TZFJService.getBySWGL_TZFJId("D41D2C8BC4054CAF98D47D92154AEE5C");
+		SWGL_TZFJ a =SWGL_TZFJService.getBySWGL_TZTGId("D41D2C8BC4054CAF98D47D92154AEE5C");
 		System.out.println(a);
 	}
 }

@@ -28,5 +28,19 @@ public class TBXX_TBRWDaoImpl extends BaseDaoImpl<TBXX_TBRW, Integer> implements
 		List<TBXX_TBRW> tbrwList = this.queryByHql(hql, null);
 		return tbrwList;
 	}
+	
+	@Override
+	public List<TBXX_TBRW> findByZt(String zt) {
+		String hql = "FROM TBXX_TBRW where ZT = "+zt;
+		List<TBXX_TBRW> tbrwList = this.queryByHql(hql, null);
+		return tbrwList;
+	}
+
+	@Override
+	public void changeZT(String zt) {
+		String hql = "update TBXX_TBRW set zt = "+zt;
+		this.executeHql(hql, null);
+		
+	}
 
 }

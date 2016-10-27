@@ -9,4 +9,8 @@ public interface TBXX_TBRWDao extends BaseDao<TBXX_TBRW, Integer> {
 
 	List<TBXX_TBRW> findByDataVersion(Long dataVersion);
 
+	List<TBXX_TBRW> findByZt(String zt);
+
+	void changeZT(String zt);
+
 }
