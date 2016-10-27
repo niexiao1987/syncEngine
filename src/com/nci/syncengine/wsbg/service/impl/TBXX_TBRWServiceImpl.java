@@ -31,7 +31,11 @@ public class TBXX_TBRWServiceImpl extends BaseServiceImpl<TBXX_TBRW, Integer> im
 		}
 		return getTBXX_TBRWDao().findByDataVersion(dataVersion);
 	}
-
+	/**
+	 * 根据状态获取同步任务List，并对list按时间排序
+	 * @return 同步任务list
+	 * @param zt 状态
+	 */
 	@Override
 	public List<TBXX_TBRW> getByZT(String zt) {
 		List<TBXX_TBRW> list = getTBXX_TBRWDao().findByZt(zt);
