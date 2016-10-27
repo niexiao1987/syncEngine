@@ -13,6 +13,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import com.nci.syncengine.wsbg.entity.DBZHJC_DBSX;
 import com.nci.syncengine.wsbg.entity.DateVersion;
 import com.nci.syncengine.wsbg.entity.SFSQ_YHZH;
+import com.nci.syncengine.wsbg.entity.SWGL_TZFJ;
 import com.nci.syncengine.wsbg.entity.SWGL_TZTG;
 import com.nci.syncengine.wsbg.entity.TBXX_TBRW;
 import com.nci.syncengine.wsbg.service.DBZHJC_DBSXService;
@@ -34,6 +35,8 @@ public class TBXX_TBRWServiceImplTest {
 	private SWGL_TZTGService SWGL_TZTGService;
 	@Autowired
 	private DBZHJC_DBSXService DBZHJC_DBSXService;
+	@Autowired
+	private com.nci.syncengine.wsbg.service.SWGL_TZFJService SWGL_TZFJService;
 	@Test
 	public void getById(){
 		System.out.println(TBXX_TBRWService.findById(1));
@@ -107,7 +110,9 @@ public class TBXX_TBRWServiceImplTest {
 					String tztgId = tbrw.getBID();
 					SWGL_TZTG tztg = SWGL_TZTGService.findById(tztgId);
 					System.out.println(tztg);
-					
+					//通知公告附件
+					SWGL_TZFJ fj = SWGL_TZFJService.findById(tztgId);
+					System.out.println(fj);
 				}
 				
 				if(BMDBSX.equals(tbrw.getBM())){
