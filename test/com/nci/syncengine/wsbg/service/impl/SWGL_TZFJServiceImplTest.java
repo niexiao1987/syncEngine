@@ -1,5 +1,7 @@
 package com.nci.syncengine.wsbg.service.impl;
 
+import java.util.List;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +26,7 @@ public class SWGL_TZFJServiceImplTest {
 	
 	@Test
 	public void getBySWGL_TZTGId(){
-		SWGL_TZFJ a =SWGL_TZFJService.getBySWGL_TZTGId("D41D2C8BC4054CAF98D47D92154AEE5C");
-		System.out.println(a);
+		List<SWGL_TZFJ> a =SWGL_TZFJService.getBySWGL_TZTGId("D41D2C8BC4054CAF98D47D92154AEE5C");
+		System.out.println("size:"+a.size());
 	}
 }

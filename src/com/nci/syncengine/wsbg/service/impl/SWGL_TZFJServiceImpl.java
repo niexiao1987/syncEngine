@@ -1,6 +1,8 @@
 package com.nci.syncengine.wsbg.service.impl;
 
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +24,7 @@ public class SWGL_TZFJServiceImpl extends BaseServiceImpl<SWGL_TZFJ, String> imp
 	}
 
 	@Override
-	public SWGL_TZFJ getBySWGL_TZTGId(String SWGL_TZTGId) {
+	public List<SWGL_TZFJ> getBySWGL_TZTGId(String SWGL_TZTGId) {
 		return getSWGL_TZFJDao().findBySWGL_TZTGId(SWGL_TZTGId);
 		
 	}

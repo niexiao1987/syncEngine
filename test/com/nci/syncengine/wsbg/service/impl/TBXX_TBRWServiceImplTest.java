@@ -125,7 +125,7 @@ public class TBXX_TBRWServiceImplTest {
 						return;
 					}
 					//通知公告附件
-					SWGL_TZFJ fj = SWGL_TZFJService.getBySWGL_TZTGId(tztgId);
+					//SWGL_TZFJ fj = SWGL_TZFJService.getBySWGL_TZTGId(tztgId);
 					
 					//已经同步到门户，将状态置为1
 					tbrw.setZT(ZT_YCK);
