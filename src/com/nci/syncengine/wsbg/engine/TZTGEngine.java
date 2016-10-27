@@ -2,12 +2,17 @@ package com.nci.syncengine.wsbg.engine;
 
 import java.rmi.RemoteException;
 import java.util.Date;
+import java.util.List;
 
 import org.apache.axis.AxisFault;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import com.nci.syncengine.api.service.NotificationService;
 import com.nci.syncengine.util.DateUtil;
 import com.nci.syncengine.util.PropUtil;
+import com.nci.syncengine.wsbg.entity.SWGL_TZFJ;
 import com.nci.syncengine.wsbg.entity.SWGL_TZTG;
 
 /**
@@ -16,6 +21,7 @@ import com.nci.syncengine.wsbg.entity.SWGL_TZTG;
  * @author Danny
  *
  */
+@Component
 public class TZTGEngine {
 
 	/**
@@ -24,8 +30,7 @@ public class TZTGEngine {
 	 * @param tztg
 	 *            通知通告实体
 	 */
-	public static void saveOrUpdate(SWGL_TZTG tztg) throws AxisFault,
-			RemoteException {
+	public void saveOrUpdate(SWGL_TZTG tztg) throws AxisFault, RemoteException {
 		boolean stick = tztg.getJJCD() != "0";// 根据紧急程度决定是否置顶
 		getNotificationService().saveOrUpdate(tztg.getID(), SYSTEM,
 				tztg.getBT(), getContent(tztg), getUrl(tztg), USER_ID,
@@ -38,7 +43,7 @@ public class TZTGEngine {
 	 * @param tztg
 	 *            通知通告实体
 	 */
-	public static void saveAndPublish(SWGL_TZTG tztg) throws AxisFault,
+	public void saveAndPublish(SWGL_TZTG tztg) throws AxisFault,
 			RemoteException {
 		boolean stick = tztg.getJJCD() != "0";// 根据紧急程度决定是否置顶
 		// 网上办公的通知公告都是针对所有人的 所以isAllUser = true permCode=null
@@ -54,7 +59,7 @@ public class TZTGEngine {
 	 * @param tztg
 	 *            通知通告实体
 	 */
-	public static void delete(SWGL_TZTG tztg) throws RemoteException {
+	public void delete(SWGL_TZTG tztg) throws RemoteException {
 		getNotificationService().delete(tztg.getID(), SYSTEM);
 	}
 
@@ -65,8 +70,18 @@ public class TZTGEngine {
 	 *            通知通告实体
 	 * @return
 	 */
-	private static String getContent(SWGL_TZTG tztg) {
+	private String getContent(SWGL_TZTG tztg) {
 		// todo：判断是否有附件，有的话在内容最后加上附件的链接
+		List<SWGL_TZFJ> listTZFJ = tzfjService.getBySWGL_TZTGId(tztg.getID());
+		if (listTZFJ != null) {
+			StringBuilder sbFJ = new StringBuilder();
+			for (SWGL_TZFJ swgl_TZFJ : listTZFJ) {
+				sbFJ.append(swgl_TZFJ.getFJBDMC() + " : ");
+				sbFJ.append("http://10.10.15.22/BGZC/SWGL/DWSW/TZTG/SWGL_TZFJXZ.aspx?ID="
+						+ swgl_TZFJ.getID() + "");
+			}
+			return tztg.getNR() + sbFJ.toString();
+		}
 		return tztg.getNR();
 	}
 
@@ -77,13 +92,16 @@ public class TZTGEngine {
 	 *            通知通告实体
 	 * @return
 	 */
-	private static String getUrl(SWGL_TZTG tztg) {
+	private String getUrl(SWGL_TZTG tztg) {
 		// 内容类别为1的时候是外部链接，内容是一个url，其他情况是普通类型
 		if (tztg.getNRLB() == "1") {
 			return tztg.getNR();
 		}
 		return null;
 	}
+
+	@Autowired
+	private com.nci.syncengine.wsbg.service.SWGL_TZFJService tzfjService;
 
 	private static String WSDL_ADDRESS = PropUtil
 			.getProperty("service_tzgg_wsdlAddress");

@@ -72,7 +72,7 @@ public class WS_NotificationTest {
 		SWGL_TZTG.setYXRQ(DateUtil.getDate(new Date(), Calendar.DATE, 5));
 		System.out.println(SWGL_TZTG);
 
-		TZTGEngine.saveAndPublish(SWGL_TZTG);
+		//TZTGEngine.saveAndPublish(SWGL_TZTG);
 	}
 
 }
