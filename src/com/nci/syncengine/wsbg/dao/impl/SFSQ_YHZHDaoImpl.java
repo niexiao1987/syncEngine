@@ -75,7 +75,7 @@ public class SFSQ_YHZHDaoImpl extends BaseDaoImpl<SFSQ_YHZH, String> implements
 	public SFSQ_YHZH findByYHBH(String yHBH) {
 		String hql = "from SFSQ_YHZH where YHBH = '"+yHBH+"'";
 		List<SFSQ_YHZH> list = this.queryByHql(hql, null);
-		if(list!=null){
+		if(list!=null&&list.size()>0){
 			return  list.get(0);
 		}
 		return null;
