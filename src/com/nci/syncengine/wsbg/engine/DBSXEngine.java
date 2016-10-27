@@ -1,9 +1,19 @@
 package com.nci.syncengine.wsbg.engine;
 
 import java.rmi.RemoteException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 
 import org.apache.axis.AxisFault;
 
+import com.jeaw.webservice.client.ParamsMap;
+import com.jeaw.webservice.client.WebServiceClientException;
+import com.jeaw.webservice.http.client.CommonHttpWebServiceClient;
 import com.nci.syncengine.api.service.NoticeService;
 import com.nci.syncengine.util.PropUtil;
 import com.nci.syncengine.wsbg.entity.DBZHJC_DBSX;
@@ -38,17 +48,72 @@ public class DBSXEngine {
 		return noticeService;
 	}
 
-//	public static void addNotice(DBZHJC_DBSX dbsx) throws AxisFault,
-//			RemoteException {
-//		String className = "user";// 根据待办事项类型决定发送受众
-//		String classId;
-//		getNoticeService().addNotice(className, classId, SYSTEM, dbsx.getID(),
-//				dbsx.getBT(), "", dbsx.getBTLJ());
-//	}
+	public static void addNotice(DBZHJC_DBSX dbsx) throws AxisFault,
+			RemoteException, WebServiceClientException {
+		// 根据待办事项类型决定发送受众,待办显示类型(0：按人员编号显示 1：按权限显示) null视为0
+		// 实际情况为绝大多数都是以用户为受众，极个别以权限发布的待办事项需要转换成受众为拥有指定权限的用户
+		// 所有className默认为User
+
+		List<String> appsysLoginIds = new ArrayList<String>();
+		appsysLoginIds.clear();
+
+		if (dbsx.getSFCL() == "1") {
+			// todo:根据权限获取拥有值定权限的用户，并将用户ID
+		} else {
+			String appsysLoginId = dbsx.getSJRID();// todo：根据用户Id获得LoginId
+			appsysLoginIds.add(appsysLoginId);
+		}
+		for (String appsysLoginId : appsysLoginIds) {
+			String classId = getUUMSLoginID(appsysLoginId);// 调用公共数据平台接口，获得对应的UUMSLoginID
+			if (classId != null) {
+				getNoticeService().addNotice("user", classId, SYSTEM,
+						dbsx.getID(), dbsx.getBT(), "", dbsx.getBTLJ());
+			} else {
+				System.out.println("公共数据平台上没有appsysLoginId为[" + appsysLoginId
+						+ "]的用户映射");
+			}
+		}
+	}
 
 	public static void completedNotice(DBZHJC_DBSX dbsx) throws AxisFault,
 			RemoteException {
 		getNoticeService().completedNotice(SYSTEM, dbsx.getID());
+	}
+
+	/**
+	 * 调用公共数据平台服务，根据应用系统用户ID获得统一用户ID
+	 * 
+	 * @param appsysLoginId
+	 *            应用系统用户ID
+	 * @return 统一用户ID
+	 */
+	private static String getUUMSLoginID(String appsysLoginId)
+			throws WebServiceClientException {
+		String wsdl = PropUtil.getProperty("service_usermap_wsdlAddress");
+		String username = PropUtil.getProperty("service_usermap_username");
+		String password = PropUtil.getProperty("service_usermap_password");
+		CommonHttpWebServiceClient client = new CommonHttpWebServiceClient(
+				wsdl, username, password);
+
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("PAGE", "1");
+		map.put("PAGESIZE ", "1");
+		map.put("APPSYSLOGINID", appsysLoginId);
+		map.put("APPSYSCODE", "WSBG");
+		ParamsMap params = new ParamsMap();
+		params.addParam(map);
+		params.setResultType(ParamsMap.RETURNTYPE_JSON);
+		String result = client.query(params);
+		JSONObject jsonObject = JSONObject.fromObject(result);
+		if ("DAS00000".equals(jsonObject.get("code"))) {
+			JSONArray jsonArray = JSONArray.fromObject(jsonObject.get("datas"));
+			List<Map<String, Object>> mapList = (List) jsonArray;
+			// 应用系统用户ID和统一用户ID是1对1关系，所以正常情况下只能查到一条数据
+			if (mapList.size() == 1) {
+				return (String) mapList.get(0).get("UUMSLOGINID");
+			}
+		}
+		return null;
 	}
 
 }

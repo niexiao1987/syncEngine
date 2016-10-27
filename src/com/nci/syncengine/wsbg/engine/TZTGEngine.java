@@ -26,11 +26,10 @@ public class TZTGEngine {
 	 */
 	public static void saveOrUpdate(SWGL_TZTG tztg) throws AxisFault,
 			RemoteException {
-		String url = tztg.getNRLB() == "0" ? null : null;// 根据内容类别决定是否有url，有的话为附件下载地址？
 		boolean stick = tztg.getJJCD() != "0";// 根据紧急程度决定是否置顶
 		getNotificationService().saveOrUpdate(tztg.getID(), SYSTEM,
-				tztg.getBT(), tztg.getNR(), url, USER_ID, ORGANIZATION_ID,
-				stick, tztg.getFBRQ(), tztg.getYXRQ());
+				tztg.getBT(), getContent(tztg), getUrl(tztg), USER_ID,
+				ORGANIZATION_ID, stick, tztg.getFBRQ(), tztg.getYXRQ());
 	}
 
 	/**
@@ -41,13 +40,12 @@ public class TZTGEngine {
 	 */
 	public static void saveAndPublish(SWGL_TZTG tztg) throws AxisFault,
 			RemoteException {
-
-		String url = tztg.getNRLB() == "0" ? null : null;// 根据内容类别决定是否有url，有的话为附件下载地址？
 		boolean stick = tztg.getJJCD() != "0";// 根据紧急程度决定是否置顶
 		// 网上办公的通知公告都是针对所有人的 所以isAllUser = true permCode=null
 		getNotificationService().saveAndPublish(tztg.getID(), SYSTEM,
-				tztg.getBT(), tztg.getNR(), url, USER_ID, ORGANIZATION_ID,
-				stick, true, null, tztg.getFBRQ(), tztg.getYXRQ());
+				tztg.getBT(), getContent(tztg), getUrl(tztg), USER_ID,
+				ORGANIZATION_ID, stick, true, null, tztg.getFBRQ(),
+				tztg.getYXRQ());
 	}
 
 	/**
@@ -58,6 +56,33 @@ public class TZTGEngine {
 	 */
 	public static void delete(SWGL_TZTG tztg) throws RemoteException {
 		getNotificationService().delete(tztg.getID(), SYSTEM);
+	}
+
+	/**
+	 * 获取内容HTML
+	 * 
+	 * @param tztg
+	 *            通知通告实体
+	 * @return
+	 */
+	private static String getContent(SWGL_TZTG tztg) {
+		// todo：判断是否有附件，有的话在内容最后加上附件的链接
+		return tztg.getNR();
+	}
+
+	/**
+	 * 获取URL
+	 * 
+	 * @param tztg
+	 *            通知通告实体
+	 * @return
+	 */
+	private static String getUrl(SWGL_TZTG tztg) {
+		// 内容类别为1的时候是外部链接，内容是一个url，其他情况是普通类型
+		if (tztg.getNRLB() == "1") {
+			return tztg.getNR();
+		}
+		return null;
 	}
 
 	private static String WSDL_ADDRESS = PropUtil
