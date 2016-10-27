@@ -12,11 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.nci.syncengine.wsbg.engine.DBSXEngine;
 import com.nci.syncengine.wsbg.engine.TZTGEngine;
 import com.nci.syncengine.wsbg.entity.DBZHJC_DBSX;
 import com.nci.syncengine.wsbg.entity.DateVersion;
-import com.nci.syncengine.wsbg.entity.SFSQ_YHZH;
-import com.nci.syncengine.wsbg.entity.SWGL_TZFJ;
 import com.nci.syncengine.wsbg.entity.SWGL_TZTG;
 import com.nci.syncengine.wsbg.entity.TBXX_TBRW;
 import com.nci.syncengine.wsbg.service.DBZHJC_DBSXService;
@@ -44,6 +43,8 @@ public class TBXX_TBRWServiceImplTest {
 	private com.nci.syncengine.wsbg.service.SWGL_TZFJService SWGL_TZFJService;
 	@Autowired
 	private  TZTGEngine tztgEngine;
+	@Autowired
+	private  DBSXEngine dbsxEngine;
 
 	@Test
 	public void getById() {
