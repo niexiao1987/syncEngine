@@ -1,6 +1,7 @@
 package com.nci.syncengine.wsbg.service.impl;
 
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.jeaw.webservice.client.WebServiceClientException;
 import com.nci.syncengine.wsbg.engine.DBSXEngine;
 import com.nci.syncengine.wsbg.engine.TZTGEngine;
 import com.nci.syncengine.wsbg.entity.DBZHJC_DBSX;
@@ -115,7 +117,11 @@ public class TBXX_TBRWServiceImplTest {
 	public void saveToMenhu() {
 		List<TBXX_TBRW> tbrwList = TBXX_TBRWService.getByZT(ZT_WCK);
 		if (tbrwList != null) {
+			List<String> errorBidList = new ArrayList<String>();
 			for (TBXX_TBRW tbrw : tbrwList) {
+				if(errorBidList.contains(tbrw.getBID())){
+					continue;
+				}
 				// 获取通知公告
 				if (BMTZTG.endsWith(tbrw.getBM())) {
 					String tztgId = tbrw.getBID();
@@ -123,22 +129,31 @@ public class TBXX_TBRWServiceImplTest {
 					try {
 						TZTGSaveOrUpdate(tbrw.getLX(), tztg);
 					} catch (RemoteException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-						return;
+						System.out.println("同步表["+tbrw.getBM()+"]的ID为["+tbrw.getBID()+"]的数据发生错误");
+						errorBidList.add(tbrw.getBID());
+						continue;
 					}
 					// 通知公告附件
 					// SWGL_TZFJ fj = SWGL_TZFJService.getBySWGL_TZTGId(tztgId);
 
-					// 已经同步到门户，将状态置为1
-					tbrw.setZT(ZT_YCK);
-					TBXX_TBRWService.update(tbrw);
+					
 				}
 				// 获取代办事项
 				if (BMDBSX.equals(tbrw.getBM())) {
 					String dbsxId = tbrw.getBID();
 					DBZHJC_DBSX dbsx = DBZHJC_DBSXService.findById(dbsxId);
+					try {
+						DBSXSaveOrUpdate(tbrw,dbsx);
+					} catch (Exception e) {
+						System.out.println("同步表["+tbrw.getBM()+"]的ID为["+tbrw.getBID()+"]的数据发生错误");
+						errorBidList.add(tbrw.getBID());
+						continue ;
+					}
 				}
+				
+				// 已经同步到门户，将状态置为1
+				tbrw.setZT(ZT_YCK);
+				TBXX_TBRWService.update(tbrw);
 
 			}
 
@@ -169,7 +184,14 @@ public class TBXX_TBRWServiceImplTest {
 		}
 	}
 	//根据同步任务表和代办事项的状态判断是删除还是新增，更新
-	private void DBSXSaveOrUpdate(String lx,DBZHJC_DBSX  dbsx){
-		
+	private void DBSXSaveOrUpdate(TBXX_TBRW rw,DBZHJC_DBSX  dbsx) throws AxisFault, RemoteException, WebServiceClientException{
+		if("i".equals(rw.getLX())){
+			dbsxEngine.addNotice(dbsx);
+			System.out.println("insert:"+dbsx);
+		}
+		if("d".equals(rw.getLX())){
+			dbsxEngine.completedNotice(rw.getBID());
+			System.out.println("del:"+dbsx);
+		}
 	}
 }
