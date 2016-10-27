@@ -17,4 +17,6 @@ public interface SFSQ_YHZHDao extends BaseDao<SFSQ_YHZH, String> {
 
 	public void deleteByYHZH(String yHZH);
 
+	public SFSQ_YHZH findByYHBH(String yHBH);
+
 }

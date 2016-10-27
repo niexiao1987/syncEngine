@@ -60,6 +60,12 @@ public class SFSQ_YHZHServiceImplTest {
 	private DateVersionService dateVersionService;
 
 	@Test
+	public void getByYHBH(){
+		SFSQ_YHZH yh = SFSQ_YHZHService.getByYHBH("00001101");
+		System.out.println(yh);
+	}
+	
+	@Test
 	public void testFindAll() {
 		List<SFSQ_YHZH> list = SFSQ_YHZHService.findAll();
 		System.out.println(list.size());

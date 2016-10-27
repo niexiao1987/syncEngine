@@ -71,4 +71,14 @@ public class SFSQ_YHZHDaoImpl extends BaseDaoImpl<SFSQ_YHZH, String> implements
 		this.executeHql(hql, null);
 	}
 
+	@Override
+	public SFSQ_YHZH findByYHBH(String yHBH) {
+		String hql = "from SFSQ_YHZH where YHBH = '"+yHBH+"'";
+		List<SFSQ_YHZH> list = this.queryByHql(hql, null);
+		if(list!=null){
+			return  list.get(0);
+		}
+		return null;
+	}
+
 }

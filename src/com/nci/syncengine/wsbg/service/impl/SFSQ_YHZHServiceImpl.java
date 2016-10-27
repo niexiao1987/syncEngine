@@ -66,4 +66,9 @@ public class SFSQ_YHZHServiceImpl extends BaseServiceImpl<SFSQ_YHZH, String>
 	public void delByYHZH(String YHZH) {
 		 getSFSQ_YHZHDao().deleteByYHZH(YHZH);
 	}
+
+	@Override
+	public SFSQ_YHZH getByYHBH(String YHBH) {
+		return  getSFSQ_YHZHDao().findByYHBH(YHBH);
+	}
 }
