@@ -71,14 +71,14 @@ public class TZTGEngine {
 	 * @return
 	 */
 	private String getContent(SWGL_TZTG tztg) {
-		// todo：判断是否有附件，有的话在内容最后加上附件的链接
+		// 判断是否有附件，有的话在内容最后加上附件的链接
 		List<SWGL_TZFJ> listTZFJ = tzfjService.getBySWGL_TZTGId(tztg.getID());
 		if (listTZFJ != null) {
 			StringBuilder sbFJ = new StringBuilder();
 			for (SWGL_TZFJ swgl_TZFJ : listTZFJ) {
+				// todo：修改链接格式
 				sbFJ.append(swgl_TZFJ.getFJBDMC() + " : ");
-				sbFJ.append("http://10.10.15.22/BGZC/SWGL/DWSW/TZTG/SWGL_TZFJXZ.aspx?ID="
-						+ swgl_TZFJ.getID() + "");
+				sbFJ.append(FJXZ_ADDRESS + "?ID=" + swgl_TZFJ.getID());
 			}
 			return tztg.getNR() + sbFJ.toString();
 		}
@@ -106,13 +106,15 @@ public class TZTGEngine {
 	private static String WSDL_ADDRESS = PropUtil
 			.getProperty("service_tzgg_wsdlAddress");
 	private static String SYSTEM = PropUtil.getProperty("service_tzgg_system");
-	private static String USER_ID = "";
-	private static String ORGANIZATION_ID = "";
-
 	private static String WS_USERNAME = PropUtil
 			.getProperty("service_tzgg_username");
 	private static String WS_PASSWORD = PropUtil
 			.getProperty("service_tzgg_password");
+	private static String FJXZ_ADDRESS = PropUtil
+			.getProperty("service_tzgg_fjxzAddress");
+
+	private static String USER_ID = "";
+	private static String ORGANIZATION_ID = "";
 
 	private static NotificationService notificationService = null;
 
