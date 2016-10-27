@@ -67,7 +67,7 @@ public class DBSXEngine {
 			String classId = getUUMSLoginID(appsysLoginId);// 调用公共数据平台接口，获得对应的UUMSLoginID
 			if (classId != null) {
 				getNoticeService().addNotice("user", classId, SYSTEM,
-						dbsx.getID(), dbsx.getBT(), "", dbsx.getBTLJ());
+						dbsx.getID(), dbsx.getBT(), null, getUrl(dbsx));
 			} else {
 				System.out.println("公共数据平台上没有appsysLoginId为[" + appsysLoginId
 						+ "]的用户映射");
@@ -78,6 +78,10 @@ public class DBSXEngine {
 	public static void completedNotice(DBZHJC_DBSX dbsx) throws AxisFault,
 			RemoteException {
 		getNoticeService().completedNotice(SYSTEM, dbsx.getID());
+	}
+
+	private static String getUrl(DBZHJC_DBSX dbsx) {
+		return dbsx.getBTLJ();
 	}
 
 	/**
