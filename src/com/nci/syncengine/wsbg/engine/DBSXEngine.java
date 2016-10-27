@@ -72,9 +72,9 @@ public class DBSXEngine {
 	 * @param dbsx
 	 *            待办事项实体
 	 */
-	public void completedNotice(DBZHJC_DBSX dbsx) throws AxisFault,
+	public void completedNotice(String dbsxId) throws AxisFault,
 			RemoteException {
-		getNoticeService().completedNotice(SYSTEM, dbsx.getID());
+		getNoticeService().completedNotice(SYSTEM, dbsxId);
 	}
 
 	private String getUrl(DBZHJC_DBSX dbsx) {
