@@ -10,6 +10,7 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import org.apache.axis.AxisFault;
+import org.springframework.stereotype.Component;
 
 import com.jeaw.webservice.client.ParamsMap;
 import com.jeaw.webservice.client.WebServiceClientException;
@@ -25,6 +26,7 @@ import com.nci.wjxy.portal.service.http.Plugin_wjxy_NoticeServiceSoapBindingStub
  * @author Danny
  *
  */
+@Component
 public class DBSXEngine {
 
 	private static String WSDL_ADDRESS = PropUtil
@@ -48,8 +50,8 @@ public class DBSXEngine {
 		return noticeService;
 	}
 
-	public static void addNotice(DBZHJC_DBSX dbsx) throws AxisFault,
-			RemoteException, WebServiceClientException {
+	public void addNotice(DBZHJC_DBSX dbsx) throws AxisFault, RemoteException,
+			WebServiceClientException {
 		// 根据待办事项类型决定发送受众,待办显示类型(0：按人员编号显示 1：按权限显示) null视为0
 		// 实际情况为绝大多数都是以用户为受众，极个别以权限发布的待办事项需要转换成受众为拥有指定权限的用户
 		// 所有className默认为User
@@ -75,7 +77,7 @@ public class DBSXEngine {
 		}
 	}
 
-	public static void completedNotice(DBZHJC_DBSX dbsx) throws AxisFault,
+	public void completedNotice(DBZHJC_DBSX dbsx) throws AxisFault,
 			RemoteException {
 		getNoticeService().completedNotice(SYSTEM, dbsx.getID());
 	}
@@ -91,7 +93,7 @@ public class DBSXEngine {
 	 *            应用系统用户ID
 	 * @return 统一用户ID
 	 */
-	private static String getUUMSLoginID(String appsysLoginId)
+	private String getUUMSLoginID(String appsysLoginId)
 			throws WebServiceClientException {
 		String wsdl = PropUtil.getProperty("service_usermap_wsdlAddress");
 		String username = PropUtil.getProperty("service_usermap_username");
