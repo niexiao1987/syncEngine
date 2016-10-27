@@ -12,6 +12,7 @@ import net.sf.json.JSONObject;
 import org.apache.axis.AxisFault;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -20,7 +21,10 @@ import com.jeaw.webservice.client.WebServiceClientException;
 import com.jeaw.webservice.http.client.CommonHttpWebServiceClient;
 import com.nci.syncengine.api.service.NoticeService;
 import com.nci.syncengine.util.PropUtil;
+import com.nci.syncengine.wsbg.engine.DBSXEngine;
+import com.nci.syncengine.wsbg.entity.DBZHJC_DBSX;
 import com.nci.syncengine.wsbg.entity.WebServiceUser;
+import com.nci.syncengine.wsbg.service.DBZHJC_DBSXService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 // 用于配置spring中测试的环境
@@ -48,6 +52,11 @@ public class WS_NoticeTest {
 		}
 		return noticeService;
 	}
+
+	@Autowired
+	private DBSXEngine dbsxEngine;
+	@Autowired
+	private DBZHJC_DBSXService dbsxService;
 
 	@Test
 	public void testAddNotice() throws RemoteException {
@@ -107,7 +116,7 @@ public class WS_NoticeTest {
 		if ("DAS00000".equals(jsonObject.get("code"))) {
 			JSONArray jsonArray = JSONArray.fromObject(jsonObject.get("datas"));
 			List<Map<String, Object>> mapList = (List) jsonArray;
-			//应用系统用户ID和统一用户ID是1对1关系，所以正常情况下只能查到一条数据
+			// 应用系统用户ID和统一用户ID是1对1关系，所以正常情况下只能查到一条数据
 			if (mapList.size() == 1) {
 				return (String) mapList.get(0).get("UUMSLOGINID");
 			}
@@ -115,4 +124,17 @@ public class WS_NoticeTest {
 		return null;
 	}
 
+	@Test
+	public void testEngine() {
+
+		DBZHJC_DBSX dbsx = dbsxService
+				.findById("DB17ED67CE8B4DBF8B8AA84DD921768C");
+		try {
+			dbsxEngine.addNotice(dbsx);
+		} catch (RemoteException | WebServiceClientException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
 }
