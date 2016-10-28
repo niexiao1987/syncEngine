@@ -90,23 +90,7 @@ public class TBXX_TBRWServiceImplTest {
 		TBXX_TBRWService.changeZT(zt);
 	}
 
-	@Test
-	public void task() {
-		TimerTask timerTask = new TimerTask() {
-
-			@Override
-			public void run() {
-				System.out.println("---22---");
-
-			}
-		};
-
-		Timer timer = new Timer();
-		long delay = 0;
-		long intevalPeriod = 5 * 1000;
-		timer.scheduleAtFixedRate(timerTask, delay, intevalPeriod);
-
-	}
+	
 
 	/**
 	 * 获取数据库中的dateVersion,根据dateVersion获得同步任务List，并更新dataversion

@@ -86,6 +86,13 @@
 		<property name="sessionFactory" ref="sessionFactory" />
 		<!-- <property name="cacheQueries" value="true" /> -->
 	</bean>
+	
+	
+	<!-- 定时任务类 -->
+	<task:scheduled-tasks> 
+        <task:scheduled ref="taskJob" method="syncUser" cron="0 0/1 * * * ?"/> 
+        <task:scheduled ref="taskJob" method="syncDbsxAndTztg" cron="0 0/1 * * * ?"/> 
+	</task:scheduled-tasks>
 
 	<context:annotation-config />
 	<context:component-scan base-package="com.nci.syncengine" />
