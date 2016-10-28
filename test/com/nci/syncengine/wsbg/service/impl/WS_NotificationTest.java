@@ -15,6 +15,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import com.nci.syncengine.api.service.NotificationService;
 import com.nci.syncengine.util.DateUtil;
 import com.nci.syncengine.util.PropUtil;
+import com.nci.syncengine.wsbg.engine.DBSXEngine;
 import com.nci.syncengine.wsbg.engine.TZTGEngine;
 import com.nci.syncengine.wsbg.entity.SWGL_TZTG;
 import com.nci.syncengine.wsbg.service.SWGL_TZTGService;
@@ -24,6 +25,36 @@ import com.nci.syncengine.wsbg.service.SWGL_TZTGService;
 @ContextConfiguration(locations = { "classpath:config/application-context.xml" })
 // 用于指定配置文件所在的位置
 public class WS_NotificationTest {
+
+	@Test
+	public void testSaveAndPublish() throws RemoteException {
+		String taskId = UUID.randomUUID().toString();
+		String title = "wsbg-title";
+		String content = "content";
+		String url = "url";
+		boolean stick = false;
+		boolean isAllUser = true;
+		String permCode = "";
+		Date publishedDate = new Date();
+		Date expiryDate = DateUtil.getDate(publishedDate, Calendar.DATE, 3);
+		getNotificationService().saveAndPublish(taskId, SYSTEM, title, content,
+				url, USER_ID, ORGANIZATION_ID, stick, isAllUser, permCode,
+				null, null);
+	}
+
+	@Test
+	public void testEngine() throws RemoteException {
+		SWGL_TZTG SWGL_TZTG = tztgService
+				.findById("009293072B5E4BF79027762ACB36C4D1");
+		SWGL_TZTG.setYXRQ(DateUtil.getDate(new Date(), Calendar.DATE, 5));
+		System.out.println(SWGL_TZTG);
+		tztgEngine.saveAndPublish(SWGL_TZTG);
+	}
+
+	@Autowired
+	private TZTGEngine tztgEngine;
+	@Autowired
+	private com.nci.syncengine.wsbg.service.SWGL_TZTGService tztgService;
 
 	private static String WSDL_ADDRESS = PropUtil
 			.getProperty("service_tzgg_wsdlAddress");
@@ -45,34 +76,4 @@ public class WS_NotificationTest {
 		}
 		return notificationService;
 	}
-
-	@Test
-	public void testSaveAndPublish() throws RemoteException {
-		String taskId = UUID.randomUUID().toString();
-		String title = "wsbg-title";
-		String content = "content";
-		String url = "url";
-		boolean stick = false;
-		boolean isAllUser = true;
-		String permCode = "";
-		Date publishedDate = new Date();
-		Date expiryDate = DateUtil.getDate(publishedDate, Calendar.DATE, 3);
-		getNotificationService().saveAndPublish(taskId, SYSTEM, title, content,
-				url, USER_ID, ORGANIZATION_ID, stick, isAllUser, permCode,
-				null, null);
-	}
-
-	@Autowired
-	private com.nci.syncengine.wsbg.service.SWGL_TZTGService SWGL_TZTGService;
-
-	@Test
-	public void testEngine() throws RemoteException {
-		SWGL_TZTG SWGL_TZTG = SWGL_TZTGService
-				.findById("009293072B5E4BF79027762ACB36C4D1");
-		SWGL_TZTG.setYXRQ(DateUtil.getDate(new Date(), Calendar.DATE, 5));
-		System.out.println(SWGL_TZTG);
-
-		//TZTGEngine.saveAndPublish(SWGL_TZTG);
-	}
-
 }

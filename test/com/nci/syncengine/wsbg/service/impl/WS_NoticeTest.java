@@ -126,7 +126,6 @@ public class WS_NoticeTest {
 
 	@Test
 	public void testEngine() {
-
 		DBZHJC_DBSX dbsx = dbsxService
 				.findById("DB17ED67CE8B4DBF8B8AA84DD921768C");
 		try {
@@ -135,6 +134,5 @@ public class WS_NoticeTest {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
 	}
 }
