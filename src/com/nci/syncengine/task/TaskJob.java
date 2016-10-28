@@ -60,12 +60,6 @@ public class TaskJob {
 	@Autowired
 	private SFSQ_YHZHService SFSQ_YHZHService;
 
-
-	
-	
-	
-
-	
 	
 	public void syncUser(){
 		System.out.println("同步用户开始·········");
