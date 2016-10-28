@@ -78,8 +78,9 @@ public class DBSXEngine {
 	}
 
 	private String getUrl(DBZHJC_DBSX dbsx) {
-		// 根据待办事项类型获取跳转地址
-		return DBSX_ADDRESS + dbsx.getSPLXBH();
+		return WSBG_SSO_ADDRESS;
+		// // 根据待办事项类型获取跳转地址
+		// return DBSX_ADDRESS + dbsx.getSPLXBH();
 	}
 
 	/**
@@ -128,6 +129,10 @@ public class DBSXEngine {
 			.getProperty("service_dbsx_username");
 	private static String WS_PASSWORD = PropUtil
 			.getProperty("service_dbsx_password");
+
+	// 网上办公单点登录地址
+	private static String WSBG_SSO_ADDRESS = PropUtil
+			.getProperty("service_wsbg_ssoAddress");
 
 	// 跳转地址
 	private static String DBSX_ADDRESS = PropUtil
