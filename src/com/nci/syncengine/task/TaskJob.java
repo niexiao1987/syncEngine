@@ -81,6 +81,11 @@ public class TaskJob {
 		
 	}
 	
+	public void test(){
+		System.out.println("test开始······");
+		System.out.println("test结束······");
+	}
+	
 	
 	/**
 	 * 获取数据库中的dateVersion,根据dateVersion获得同步任务List，并更新dataversion
@@ -109,8 +114,6 @@ public class TaskJob {
 					}
 					// 通知公告附件
 					// SWGL_TZFJ fj = SWGL_TZFJService.getBySWGL_TZTGId(tztgId);
-
-					
 				}
 				// 获取代办事项
 				if (BMDBSX.equals(tbrw.getBM())) {
@@ -224,11 +227,9 @@ public class TaskJob {
 			dateVersion.setDataversion(version);
 			dateVersionService.update(dateVersion);
 		}
-		
-		
-		
-		
 	}
+	
+	
 	
 
 	

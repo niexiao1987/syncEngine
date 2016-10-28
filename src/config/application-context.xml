@@ -90,8 +90,11 @@
 	
 	<!-- 定时任务类 -->
 	<task:scheduled-tasks> 
-        <task:scheduled ref="taskJob" method="syncUser" cron="0 0/1 * * * ?"/> 
-        <task:scheduled ref="taskJob" method="syncDbsxAndTztg" cron="0 0/1 * * * ?"/> 
+<!--         <task:scheduled ref="taskJob" method="syncUser" cron="0 0 0 * * ?"/>  --><!-- 每天0点运行一次 -->
+<!--         <task:scheduled ref="taskJob" method="syncDbsxAndTztg" cron="0 0/10 0-6 * * ?"/>  --><!-- 每天0点到7点每隔10分钟运行一次 -->
+<!--         <task:scheduled ref="taskJob" method="syncDbsxAndTztg" cron="0 0/2 7-19 * * ?"/>  --><!-- 每天7点到19点每隔2分钟运行一次 -->
+<!--         <task:scheduled ref="taskJob" method="syncDbsxAndTztg" cron="0 0/10 20-23 * * ?"/>  --><!-- 每天19点到24点每隔10分钟运行一次 -->
+        <task:scheduled ref="taskJob" method="test" cron="0 30 11 * * ?"/> <!-- 每天7点到19点每隔10秒运行一次 -->
 	</task:scheduled-tasks>
 
 	<context:annotation-config />
