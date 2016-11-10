@@ -1,5 +1,6 @@
 package com.nci.syncengine.util;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -34,5 +35,40 @@ public class DateUtil {
 			return calendar;
 		}
 		return null;
+	}
+
+	/**
+	 * 获得当前日期的默认格式化字符串
+	 * 
+	 * @return
+	 */
+	public static String format() {
+		return format(new Date());
+	}
+
+	/**
+	 * 获得指定日期的默认格式化字符串
+	 * 
+	 * @param date
+	 *            指定日期
+	 * @return
+	 */
+	public static String format(Date date) {
+		String formateString = "yyyy-MM-dd HH:mm:ss";
+		return format(date, formateString);
+	}
+
+	/**
+	 * 获得指定日期的指定格式的格式化字符串
+	 * 
+	 * @param date
+	 *            指定日期
+	 * @param formatString
+	 *            指定格式
+	 * @return
+	 */
+	public static String format(Date date, String formatString) {
+		SimpleDateFormat dateFormater = new SimpleDateFormat(formatString);
+		return dateFormater.format(date);
 	}
 }

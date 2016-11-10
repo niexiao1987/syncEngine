@@ -11,17 +11,14 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import org.apache.axis.AxisFault;
-import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import com.jeaw.webservice.client.ParamsMap;
 import com.jeaw.webservice.client.WebServiceClientException;
 import com.jeaw.webservice.http.client.CommonHttpWebServiceClient;
 import com.jeaw.webservice.http.client.SyncAppUserMapHttpWebServiceClient;
-import com.nci.syncengine.util.EncryptHelper;
+import com.nci.syncengine.util.DateUtil;
 import com.nci.syncengine.util.PropUtil;
 import com.nci.syncengine.wsbg.engine.DBSXEngine;
 import com.nci.syncengine.wsbg.engine.TZTGEngine;
@@ -43,7 +40,7 @@ public class TaskJob {
 	 * 与公共数据平台同步账户
 	 */
 	public void syncUser() {
-		System.out.println("同步用户开始·········");
+		System.out.println(DateUtil.format() + ":同步用户开始·········");
 		try {
 			webServiceUserAdd();
 		} catch (WebServiceClientException e) {
@@ -52,16 +49,16 @@ public class TaskJob {
 			System.out.println("发生错误···");
 			e.printStackTrace();
 		}
-		System.out.println("同步用户结束·········");
+		System.out.println(DateUtil.format() + ":同步用户结束·········");
 	}
 
 	/**
 	 * 同步待办事项和通知公告
 	 */
 	public void syncDbsxAndTztg() {
-		System.out.println("同步通知公告待办事项开始······");
+		System.out.println(DateUtil.format() + ":同步通知公告待办事项开始······");
 		saveToMenhu();
-		System.out.println("同步通知公告待办事项结束······");
+		System.out.println(DateUtil.format() + ":同步通知公告待办事项结束······");
 
 	}
 
@@ -196,7 +193,8 @@ public class TaskJob {
 			entity.setID(id);
 			entity.setYHBH(yhbh);
 			entity.setXM(user.getXM());
-			entity.setMM(EncryptHelper.encryptPwd(userPwd));
+			//entity.setMM(EncryptHelper.encryptPwd(userPwd));//加密算法需要签名
+			entity.setMM("SlwK");//123加密后的字符串
 			entity.setYHZH(user.getLOGINID());
 			boolean flag = SFSQ_YHZHService.addSFSQ_YHZH(entity);
 			// SFSQ_YHZHService.delByYHZH(entity.getYHZH());

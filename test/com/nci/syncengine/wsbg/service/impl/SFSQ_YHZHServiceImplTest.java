@@ -7,25 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
@@ -39,7 +20,6 @@ import com.jeaw.webservice.client.ParamsMap;
 import com.jeaw.webservice.client.WebServiceClientException;
 import com.jeaw.webservice.http.client.CommonHttpWebServiceClient;
 import com.jeaw.webservice.http.client.SyncAppUserMapHttpWebServiceClient;
-import com.nci.syncengine.util.EncryptHelper;
 import com.nci.syncengine.util.PropUtil;
 import com.nci.syncengine.wsbg.entity.DateVersion;
 import com.nci.syncengine.wsbg.entity.SFSQ_YHZH;
@@ -82,7 +62,8 @@ public class SFSQ_YHZHServiceImplTest {
 		entity.setID(id);
 		entity.setYHBH(yhbh);
 		entity.setXM(name);
-		entity.setMM(EncryptHelper.encryptPwd(password));
+		//entity.setMM(EncryptHelper.encryptPwd(password));
+		entity.setMM("SlwK");
 		entity.setYHZH(name);
 		
 		System.out.println(entity);
@@ -130,7 +111,8 @@ public class SFSQ_YHZHServiceImplTest {
 			entity.setID(id);
 			entity.setYHBH(yhbh);
 			entity.setXM(user.getXM());
-			entity.setMM(EncryptHelper.encryptPwd(userPwd));
+			//entity.setMM(EncryptHelper.encryptPwd(userPwd));//加密算法需要签名
+			entity.setMM("SlwK");//123加密后的字符串
 			entity.setYHZH(user.getLOGINID());
 			boolean flag = SFSQ_YHZHService.addSFSQ_YHZH(entity);
 			//SFSQ_YHZHService.delByYHZH(entity.getYHZH());

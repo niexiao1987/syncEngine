@@ -90,8 +90,8 @@
 
 	<!-- 定时任务类 -->
 	<task:scheduled-tasks>
-		<!-- 每天0点运行一次 -->
-		<task:scheduled ref="taskJob" cron="0 0 0 * * ?"
+		<!-- 每天0点运行一次  0 0 0 * * ?-->
+		<task:scheduled ref="taskJob" cron="0/30 * 7-19 * * ?"
 			method="syncUser" />
 		<!-- 每天0点到7点每隔10分钟运行一次 -->
 		<task:scheduled ref="taskJob" cron="0 0/10 0-6 * * ?"
