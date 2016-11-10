@@ -17,6 +17,7 @@ import com.jeaw.webservice.client.ParamsMap;
 import com.jeaw.webservice.client.WebServiceClientException;
 import com.jeaw.webservice.http.client.CommonHttpWebServiceClient;
 import com.nci.syncengine.api.service.NoticeService;
+import com.nci.syncengine.base.exception.WebServiceException;
 import com.nci.syncengine.util.PropUtil;
 import com.nci.syncengine.wsbg.entity.DBZHJC_DBSX;
 import com.nci.syncengine.wsbg.entity.SFSQ_YHZH;
@@ -46,7 +47,7 @@ public class DBSXEngine {
 		appsysLoginIds.clear();
 
 		if (dbsx.getSFCL() == "1") {
-			// todo:根据权限获取拥有值定权限的用户，然后根据用户Id获得LoginId，最后加到appsysLoginIds中
+			// todo:根据权限获取拥有值定权限的用户，然后根据用户Id获得LoginId，最后加到appsysLoginIds中,由于这种情况较少，暂时不予实现
 		} else {
 			SFSQ_YHZH yhzh = yhzhService.getByYHBH(dbsx.getSJRID());
 			if (yhzh != null) {
@@ -60,8 +61,11 @@ public class DBSXEngine {
 				getNoticeService().addNotice("user", classId, SYSTEM,
 						dbsx.getID(), dbsx.getBT(), null, getUrl(dbsx));
 			} else {
-				System.out.println("公共数据平台上没有appsysLoginId为[" + appsysLoginId
-						+ "]的用户映射");
+				String exceptionMessage = "公共数据平台上没有appsysLoginId为[" + appsysLoginId
+						+ "]的用户映射";
+				System.out.println(exceptionMessage);
+				throw new WebServiceException(exceptionMessage);
+
 			}
 		}
 	}
