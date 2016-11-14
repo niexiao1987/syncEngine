@@ -113,8 +113,8 @@ public class SFSQ_YHZHServiceImplTest {
 			entity.setID(id);
 			entity.setYHBH(yhbh);
 			entity.setXM(user.getXM());
-			//entity.setMM(EncryptHelper.encryptPwd(userPwd));//加密算法需要签名
-			entity.setMM("SlwK");//123加密后的字符串
+			entity.setMM(EncryptHelper.encryptPwd(userPwd));//加密算法需要签名
+			//entity.setMM("SlwK");//123加密后的字符串
 			entity.setYHZH(user.getLOGINID());
 			boolean flag = SFSQ_YHZHService.addSFSQ_YHZH(entity);
 			//SFSQ_YHZHService.delByYHZH(entity.getYHZH());

@@ -19,6 +19,7 @@ import com.jeaw.webservice.client.WebServiceClientException;
 import com.jeaw.webservice.http.client.CommonHttpWebServiceClient;
 import com.jeaw.webservice.http.client.SyncAppUserMapHttpWebServiceClient;
 import com.nci.syncengine.util.DateUtil;
+import com.nci.syncengine.util.EncryptHelper;
 import com.nci.syncengine.util.PropUtil;
 import com.nci.syncengine.wsbg.engine.DBSXEngine;
 import com.nci.syncengine.wsbg.engine.TZTGEngine;
@@ -193,8 +194,8 @@ public class TaskJob {
 			entity.setID(id);
 			entity.setYHBH(yhbh);
 			entity.setXM(user.getXM());
-			//entity.setMM(EncryptHelper.encryptPwd(userPwd));//加密算法需要签名
-			entity.setMM("SlwK");//123加密后的字符串
+			entity.setMM(EncryptHelper.encryptPwd(userPwd));//加密算法需要签名
+			//entity.setMM("SlwK");//123加密后的字符串
 			entity.setYHZH(user.getLOGINID());
 			boolean flag = SFSQ_YHZHService.addSFSQ_YHZH(entity);
 			// SFSQ_YHZHService.delByYHZH(entity.getYHZH());
