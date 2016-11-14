@@ -20,6 +20,8 @@ import com.jeaw.webservice.client.ParamsMap;
 import com.jeaw.webservice.client.WebServiceClientException;
 import com.jeaw.webservice.http.client.CommonHttpWebServiceClient;
 import com.jeaw.webservice.http.client.SyncAppUserMapHttpWebServiceClient;
+import com.nci.syncengine.util.DateUtil;
+import com.nci.syncengine.util.EncryptHelper;
 import com.nci.syncengine.util.PropUtil;
 import com.nci.syncengine.wsbg.entity.DateVersion;
 import com.nci.syncengine.wsbg.entity.SFSQ_YHZH;
@@ -200,5 +202,15 @@ public class SFSQ_YHZHServiceImplTest {
 				+ "</DEL></DATA></DATAS>";
 		String result =client.synchroniseMapData(mapDataAddXml);
 		System.out.println(result);
+	}
+	
+	@Test
+	public void test(){
+		System.out.println(System.currentTimeMillis());
+		String userPwd="123";
+		String result =EncryptHelper.encryptPwd(userPwd);//加密算法需要签名
+		System.out.println(result);
+		System.out.println(System.currentTimeMillis());
+		
 	}
 }
